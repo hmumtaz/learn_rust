@@ -15,9 +15,9 @@ fn c_to_f(temp: f64) {
 }
 
 fn converter(f_or_c: &str, init_temp: f64) {
-    if f_or_c == "F" || f_or_c == "f" {
+    if f_or_c.to_uppercase() == "F" {
         f_to_c(init_temp);
-    } else if f_or_c == "C" || f_or_c == "c" {
+    } else if f_or_c.to_uppercase() == "C" {
         c_to_f(init_temp);
     } else {
         println!("Invalid Input. This program can only convert temperatures from Fahrenheit to Celsius or Celsius to Fahrenheit.")
