@@ -19,30 +19,26 @@ impl Rectangle {
     }
 }
 
-// Functions
+// Constructors
 impl Rectangle {
+    fn rectangle(width: u32, height: u32) -> Rectangle {
+        Rectangle { width, height }
+    }
+
     fn square(size: u32) -> Rectangle {
-        return Rectangle {width: size, height: size};
+        return Rectangle {
+            width: size,
+            height: size,
+        };
     }
 }
 
 fn main() {
-    let rect1 = Rectangle {
-        width: 30,
-        height: 50,
-    };
+    let rect1 = Rectangle::rectangle(30, 50);
 
-    let rect2 = Rectangle {
-        width: 10,
-        height: 40,
-    };
+    let rect2 = Rectangle::rectangle(10, 40);
 
-    let rect3 = Rectangle {
-        width: 60,
-        height: 45,
-    };
-
-
+    let rect3 = Rectangle::rectangle(60, 45);
 
     println!("rect1 is {:?}", rect1);
     println!("The area of the rect1 is {} square pixels", rect1.area());
