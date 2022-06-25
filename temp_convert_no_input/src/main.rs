@@ -1,7 +1,7 @@
 fn main() {
     // let mut temperature = String::new();
 
-    converter("c", 0.0)
+    converter(0.0, "c")
 }
 
 fn f_to_c(temp: f64) {
@@ -14,7 +14,7 @@ fn c_to_f(temp: f64) {
     println!("{} Celsius is {:.2} in Fahrenheit", temp, new_temperature)
 }
 
-fn converter(f_or_c: &str, init_temp: f64) {
+fn converter(init_temp: f64, f_or_c: &str) {
     if f_or_c.to_uppercase() == "F" {
         f_to_c(init_temp);
     } else if f_or_c.to_uppercase() == "C" {
