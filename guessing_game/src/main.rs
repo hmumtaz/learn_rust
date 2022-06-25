@@ -5,15 +5,15 @@ use std::io::stdin;
 fn main() {
     println!("Guess the number between 1 and 100!");
 
-    let secret_number = rand::thread_rng().gen_range(1, 101);
+    let secret_number: u8 = rand::thread_rng().gen_range(1, 101);
 
     loop {
         println!("What's your guess?");
-        let mut guess = String::new();
+        let mut input = String::new();
 
-        stdin().read_line(&mut guess).expect("Failed to read line");
+        stdin().read_line(&mut input).expect("Failed to read line");
 
-        let guess: u32 = match guess.trim().parse() {
+        let guess: u8 = match input.trim().parse() {
             Ok(num) => num,
             Err(_) => {
                 println!("Please input an integer");
@@ -21,6 +21,16 @@ fn main() {
             }
         };
         println!("You guessed {}", guess);
+
+        // Without Ordering Enum
+        // if guess < secret_number {
+        //     println!("Too Small!");
+        // } else if guess > secret_number {
+        //     println!("Too Big!");
+        // } else {
+        //     println!("You Win!");
+        //     break;
+        // }
 
         match guess.cmp(&secret_number) {
             Ordering::Less => println!("Too small!"),
