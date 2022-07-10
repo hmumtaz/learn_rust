@@ -87,7 +87,10 @@ enum Command {
 }
 
 fn sanitize_input(input: String) -> Result<Command, String> {
-    let trimmed_input = input.trim().to_lowercase();
+    let trimmed_input = String::from(input.trim());
+    if trimmed_input.len() == 0 {
+        return Err(String::from("No input given. To exit type `Exit`"));
+    }
     let title_cased = to_title_case(trimmed_input);
     let mut words: VecDeque<&str> = title_cased.split(' ').collect();
     let command = words.pop_front().unwrap();
