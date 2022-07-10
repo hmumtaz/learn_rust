@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::collections::VecDeque;
 use std::io::stdin;
 
 fn main() {
@@ -85,59 +86,59 @@ enum Command {
     Exit,
 }
 
-//TO-DO: Allow for departments with 2+ names (ie. "Human Resources")
 fn sanitize_input(input: String) -> Result<Command, String> {
-    let trimmed_input = input.trim();
-    let words: Vec<&str> = trimmed_input.split(' ').collect();
-    let mut command = String::from(words[0]);
-    command = to_title_case(command);
+    let trimmed_input = input.trim().to_lowercase();
+    let title_cased = to_title_case(trimmed_input);
+    let mut words: VecDeque<&str> = title_cased.split(' ').collect();
+    let command = words.pop_front().unwrap();
+    let parameter_string = space_join(words);
     if command.eq("Exit") {
         return Ok(Command::Exit);
     } else if command.eq("Get") {
-        if words.len() != 2 {
+        if parameter_string.eq("") {
             return Err(String::from(
                 "GET Command must be formatted as: GET All or GET <DEPARTMENT>",
             ));
         } else {
-            let department = words[1];
-            return Ok(Command::Get(String::from(department)));
+            return Ok(Command::Get(String::from(parameter_string)));
         }
     } else if command.eq("Add") {
-        if words.len() < 4 {
+        let parameters: Vec<&str> = parameter_string.split(" To ").collect();
+        if parameters.len() != 2 {
             return Err(String::from(
                 "Add Command must be formatted as: Add <EMPLOYEE> to <DEPARTMENT>",
             ));
         } else {
-            let name = format_name(words.clone());
-            let mut department = String::from(words[words.len() - 1]);
-            department = to_title_case(department);
-            return Ok(Command::Add(name, department));
+            return Ok(Command::Add(
+                String::from(parameters[0]),
+                String::from(parameters[1]),
+            ));
         }
     } else if command.eq("Remove") {
-        if words.len() < 4 {
+        let parameters: Vec<&str> = parameter_string.split(" From ").collect();
+        if parameters.len() != 2 {
             return Err(String::from(
-                "Remove Command must be formatted as: Remove <EMPLOYEE> to <DEPARTMENT>",
+                "Remove Command must be formatted as: Remove <EMPLOYEE> from <DEPARTMENT>",
             ));
         } else {
-            let name = format_name(words.clone());
-            let mut department = String::from(words[words.len() - 1]);
-            department = to_title_case(department);
-            return Ok(Command::Remove(name, department));
+            return Ok(Command::Remove(
+                String::from(parameters[0]),
+                String::from(parameters[1]),
+            ));
         }
     } else {
         return Err(String::from("Command not found"));
     }
 }
 
-fn format_name(words: Vec<&str>) -> String {
-    let mut name = String::new();
-    for word in words[1..words.len() - 2].iter() {
-        name.push_str(word);
-        name.push(' ');
+fn space_join(words: VecDeque<&str>) -> String {
+    let mut phrase = String::new();
+    for word in words {
+        phrase.push_str(word);
+        phrase.push(' ');
     }
-    name = String::from(name.trim());
-    name = to_title_case(name);
-    return name;
+    phrase = String::from(phrase.trim());
+    return phrase;
 }
 
 fn to_title_case(s: String) -> String {
