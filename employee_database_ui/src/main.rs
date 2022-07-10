@@ -89,8 +89,8 @@ fn sanitize_input<'a>(input: String) -> Result<Command, &'a str> {
     if trimmed_input.len() == 0 {
         return Err("No input given. To exit type `Exit`");
     }
-    let title_cased = to_title_case(trimmed_input);
-    let mut words: VecDeque<&str> = title_cased.split(' ').collect();
+    let trimmed_input: String = to_title_case(trimmed_input);
+    let mut words: VecDeque<&str> = trimmed_input.split(' ').collect();
     let command = words.pop_front().unwrap();
     let parameter_string = space_join(words);
     if command.eq("Exit") {
