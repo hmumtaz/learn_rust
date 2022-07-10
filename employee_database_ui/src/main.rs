@@ -22,13 +22,11 @@ fn main() {
             Ok(x) => match x {
                 Command::Exit => break,
                 Command::Add(name, department) => {
-                    let pd = department.clone();
-                    let pn = name.clone();
+                    println!("Adding {} to {}", &name, &department);
                     let dept_employees = employees_by_department
                         .entry(department)
                         .or_insert(Vec::new());
                     dept_employees.push(name);
-                    println!("Added {} to {}", pn, pd);
                 }
                 Command::Remove(name, department) => {
                     let dept_employees = match employees_by_department.get_mut(&department) {
@@ -86,10 +84,10 @@ enum Command {
     Exit,
 }
 
-fn sanitize_input(input: String) -> Result<Command, String> {
-    let trimmed_input = String::from(input.trim());
+fn sanitize_input<'a>(input: String) -> Result<Command, &'a str> {
+    let trimmed_input: &str = input.trim();
     if trimmed_input.len() == 0 {
-        return Err(String::from("No input given. To exit type `Exit`"));
+        return Err("No input given. To exit type `Exit`");
     }
     let title_cased = to_title_case(trimmed_input);
     let mut words: VecDeque<&str> = title_cased.split(' ').collect();
@@ -98,39 +96,33 @@ fn sanitize_input(input: String) -> Result<Command, String> {
     if command.eq("Exit") {
         return Ok(Command::Exit);
     } else if command.eq("Get") {
-        if parameter_string.eq("") {
-            return Err(String::from(
-                "GET Command must be formatted as: GET All or GET <DEPARTMENT>",
-            ));
+        if parameter_string.len() == 0 {
+            return Err("GET Command must be formatted as: GET All or GET <DEPARTMENT>");
         } else {
-            return Ok(Command::Get(String::from(parameter_string)));
+            return Ok(Command::Get(parameter_string));
         }
     } else if command.eq("Add") {
         let parameters: Vec<&str> = parameter_string.split(" To ").collect();
         if parameters.len() != 2 {
-            return Err(String::from(
-                "Add Command must be formatted as: Add <EMPLOYEE> to <DEPARTMENT>",
-            ));
+            return Err("Add Command must be formatted as: Add <EMPLOYEE> to <DEPARTMENT>");
         } else {
             return Ok(Command::Add(
-                String::from(parameters[0]),
-                String::from(parameters[1]),
+                parameters[0].to_owned(),
+                parameters[1].to_owned(),
             ));
         }
     } else if command.eq("Remove") {
         let parameters: Vec<&str> = parameter_string.split(" From ").collect();
         if parameters.len() != 2 {
-            return Err(String::from(
-                "Remove Command must be formatted as: Remove <EMPLOYEE> from <DEPARTMENT>",
-            ));
+            return Err("Remove Command must be formatted as: Remove <EMPLOYEE> from <DEPARTMENT>");
         } else {
             return Ok(Command::Remove(
-                String::from(parameters[0]),
-                String::from(parameters[1]),
+                parameters[0].to_owned(),
+                parameters[1].to_owned(),
             ));
         }
     } else {
-        return Err(String::from("Command not found"));
+        return Err("Command not found");
     }
 }
 
@@ -144,7 +136,7 @@ fn space_join(words: VecDeque<&str>) -> String {
     return phrase;
 }
 
-fn to_title_case(s: String) -> String {
+fn to_title_case<'a>(s: &'a str) -> String {
     let words: Vec<&str> = s.split(' ').collect();
     let mut response = String::new();
     for word in words {
