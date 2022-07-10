@@ -136,7 +136,7 @@ fn space_join(words: VecDeque<&str>) -> String {
     return phrase;
 }
 
-fn to_title_case<'a>(s: &'a str) -> String {
+fn to_title_case(s: &str) -> String {
     let words: Vec<&str> = s.split(' ').collect();
     let mut response = String::new();
     for word in words {
